@@ -5,6 +5,7 @@
 #include <Settings/Settings.hpp>
 #include <Network/Network.hpp>
 #include <Network/PacketExpansion.hpp>
+#include <BlFa3/BF3Functions.hpp>
 
 namespace Pulsar {
 namespace Network {
@@ -39,27 +40,37 @@ static void BeforeROOMSend(RKNet::PacketHolder<PulROOM>* packetHolder, PulROOM* 
             | (settings.GetSettingValue(Settings::SETTINGSTYPE_OTT, SETTINGOTT_ALLOWUMTS) ^ true) << PULSAR_UMTS //ott umts
             | koSetting << PULSAR_MODE_KO
             | (settings.GetSettingValue(Settings::SETTINGSTYPE_HOST, SETTINGHOST_ALLOW_MIIHEADS) ^ true) << PULSAR_MIIHEADS
-            | settings.GetSettingValue(Settings::SETTINGSTYPE_HOST, SETTINGHOST_RADIO_HOSTWINS) << PULSAR_HAW;
+            | settings.GetSettingValue(Settings::SETTINGSTYPE_HOST, SETTINGHOST_RADIO_HOSTWINS) << PULSAR_HAW
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_TYPE),1) << WDD_TC_BIN1
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_TYPE),2) << WDD_TC_BIN2
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EXTRATYPE),1) << WDD_EXTRATC_BIN1
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EXTRATYPE),2) << WDD_EXTRATC_BIN2
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EFFECT),1) << WDD_TC_EFFECT
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_MODE),1) << WDD_LAP_MODE
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT),1) << WDD_LAP_BIN1
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT),2) << WDD_LAP_BIN2
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT),3) << WDD_LAP_BIN3
+            | BlFa3::getbin(settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT),4) << WDD_LAP_BIN4;
 
         u8 raceCount;
         if (koSetting == KOSETTING_ENABLED) raceCount = 0xFE;
         else switch (settings.GetSettingValue(Settings::SETTINGSTYPE_HOST, SETTINGHOST_SCROLL_GP_RACES)) {
-        case(0x2):
+        case(0x1):
             raceCount = 7;
             break;
-        case(0x4):
+        case(0x2):
             raceCount = 11;
             break;
-        case(0x6):
+        case(0x3):
             raceCount = 23;
             break;
-        case(0x8):
+        case(0x4):
             raceCount = 31;
             break;
-        case(0xA):
+        case(0x5):
             raceCount = 63;
             break;
-        case(0xC):
+        case(0x6):
             raceCount = 1;
             break;
         default:
