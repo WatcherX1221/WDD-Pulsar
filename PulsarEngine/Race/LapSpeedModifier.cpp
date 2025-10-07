@@ -11,7 +11,40 @@ namespace Pulsar {
 namespace Race {
 //Mostly a port of MrBean's version with better hooks and arguments documentation
 RaceinfoPlayer* LoadCustomLapCount(RaceinfoPlayer* player, u8 id) {
-    const u8 lapCount = KMP::Manager::sInstance->stgiSection->holdersArray[0]->raw->lapCount;
+    u8 lapCount = KMP::Manager::sInstance->stgiSection->holdersArray[0]->raw->lapCount;;
+    if (System::sInstance->IsContext(WDD_LAP_MODE) == 1 && lapCount != 1) 
+    {
+        switch (System::sInstance->IsContext(WDD_LAP_BIN1)+System::sInstance->IsContext(WDD_LAP_BIN2)*2+System::sInstance->IsContext(WDD_LAP_BIN3)*4+System::sInstance->IsContext(WDD_LAP_BIN4)*8) 
+        {
+            case(0x1): // 2 laps
+                lapCount = 2;
+                break;
+            case(0x2): // 3 laps
+                lapCount = 3;
+                break;
+            case(0x3): // 4 laps
+                lapCount = 4;
+                break;
+            case(0x4): // 5 laps
+                lapCount = 5;
+                break;
+            case(0x5): // 6 laps
+                lapCount = 6;
+                break;
+            case(0x6): // 7 laps
+                lapCount = 7;
+                break;
+            case(0x7): // 8 laps
+                lapCount = 8;
+                break;
+            case(0x8): // 9 laps
+                lapCount = 9;
+                break;
+            default: // 1 lap
+                lapCount = 1;
+                break;
+        }
+    }
     Racedata::sInstance->racesScenario.settings.lapCount = lapCount;
     return new(player) RaceinfoPlayer(id, lapCount);
 }
