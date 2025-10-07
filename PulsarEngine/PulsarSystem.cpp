@@ -12,6 +12,7 @@
 #include <Config.hpp>
 #include <SlotExpansion/CupsConfig.hpp>
 #include <core/egg/DVD/DvdRipper.hpp>
+#include <BlFa3/BF3Functions.hpp>
 namespace Pulsar {
 
 System* System::sInstance = nullptr;
@@ -123,6 +124,17 @@ void System::UpdateContext() {
     bool isKO = false;
     bool isOTT = false;
     bool isMiiHeads = settings.GetSettingValue(Settings::SETTINGSTYPE_RACE, SETTINGRACE_RADIO_MII);
+    //WDD definitions
+    bool wddtceffect = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EFFECT)),1);
+    bool wddtc1 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_TYPE)),1);
+    bool wddtc2 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_TYPE)),2);
+    bool wddextratc1 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EXTRATYPE)),1);
+    bool wddextratc2 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDTC, SETTINGWDD_TC_EXTRATYPE)),2);
+    bool wddlapmode = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_MODE)),1);
+    bool wddlapcount1 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT)),1);
+    bool wddlapcount2 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT)),2);
+    bool wddlapcount3 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT)),3);
+    bool wddlapcount4 = BlFa3::getbin((settings.GetUserSettingValue(Settings::SETTINGSTYPE_WDDLAP, SETTINGWDD_LAP_COUNT)),4);
 
     const RKNet::Controller* controller = RKNet::Controller::sInstance;
     const GameMode mode = racedataSettings.gamemode;
@@ -138,6 +150,9 @@ void System::UpdateContext() {
     if(sceneId != SCENE_ID_GLOBE && controller->connectionState != RKNet::CONNECTIONSTATE_SHUTDOWN) {
         switch(controller->roomType) {
             case(RKNet::ROOMTYPE_VS_REGIONAL):
+                wddtc1 = 1;
+                wddtc2 = 0;
+                wddlapmode = 0;
             case(RKNet::ROOMTYPE_JOINING_REGIONAL):
                 isOTT = netMgr.ownStatusData == true;
                 break;
@@ -153,6 +168,19 @@ void System::UpdateContext() {
                     isUMTs &= newContext & (1 << PULSAR_UMTS);
                     isFeather &= newContext & (1 << PULSAR_FEATHER);
                 }
+                //WDD Specific settings
+                //TC
+                wddtceffect = newContext & (1 << WDD_TC_EFFECT);
+                wddtc1 = newContext & (1 << WDD_TC_BIN1);
+                wddtc2 = newContext & (1 << WDD_TC_BIN2);
+                wddextratc1 = newContext & (1 << WDD_EXTRATC_BIN1);
+                wddextratc2 = newContext & (1 << WDD_EXTRATC_BIN2);
+                //LAP
+                wddlapmode = newContext & (1 << WDD_LAP_MODE);
+                wddlapcount1 = newContext & (1 << WDD_LAP_BIN1);
+                wddlapcount2 = newContext & (1 << WDD_LAP_BIN2);
+                wddlapcount3 = newContext & (1 << WDD_LAP_BIN3);
+                wddlapcount4 = newContext & (1 << WDD_LAP_BIN4);
                 break;
             default: isCT = false;
         }
@@ -169,7 +197,22 @@ void System::UpdateContext() {
 
     u32 context = (isCT << PULSAR_CT) | (isHAW << PULSAR_HAW) | (isMiiHeads << PULSAR_MIIHEADS);
     if(isCT) { //contexts that should only exist when CTs are on
-        context |= (is200 << PULSAR_200) | (isFeather << PULSAR_FEATHER) | (isUMTs << PULSAR_UMTS) | (isMegaTC << PULSAR_MEGATC) | (isOTT << PULSAR_MODE_OTT) | (isKO << PULSAR_MODE_KO);
+        context |= (is200 << PULSAR_200) 
+        | (isFeather << PULSAR_FEATHER) 
+        | (isUMTs << PULSAR_UMTS) 
+        | (isMegaTC << PULSAR_MEGATC) 
+        | (isOTT << PULSAR_MODE_OTT) 
+        | (isKO << PULSAR_MODE_KO)
+        | (wddtc1 << WDD_TC_BIN1)
+        | (wddtc2 << WDD_TC_BIN2)
+        | (wddextratc1 << WDD_EXTRATC_BIN1)
+        | (wddextratc2 << WDD_EXTRATC_BIN2)
+        | (wddtceffect << WDD_TC_EFFECT)
+        | (wddlapmode << WDD_LAP_MODE)
+        | (wddlapcount1 << WDD_LAP_BIN1)
+        | (wddlapcount2 << WDD_LAP_BIN2)
+        | (wddlapcount3 << WDD_LAP_BIN3)
+        | (wddlapcount4 << WDD_LAP_BIN4);
     }
     this->context = context;
 
