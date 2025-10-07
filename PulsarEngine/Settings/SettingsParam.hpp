@@ -11,7 +11,7 @@ namespace Settings {
 class Params {
 public:
     static const int pulsarPageCount = 5;
-    static const int userPageCount = 0;
+    static const int userPageCount = 2;
     static const int pageCount = pulsarPageCount + userPageCount;
 
     static const int maxRadioCount = 6; //per page, due to space
@@ -36,7 +36,8 @@ enum Type {
 
 //If you want to add settings to your packs, they go in this enum, and GetUserSettingValue should be used to obtain the value of a given setting
 enum UserType {
-
+    SETTINGSTYPE_WDDTC,
+    SETTINGSTYPE_WDDLAP,
 };
 
 }//namespace Settings
@@ -64,7 +65,6 @@ enum HostSettings {
     SETTINGHOST_RADIO_HOSTWINS = 0,
     SETTINGHOST_RADIO_CC = 1,
     SETTINGHOST_ALLOW_MIIHEADS = 2,
-
     SETTINGHOST_SCROLL_GP_RACES = 0 + 6
 };
 
@@ -83,6 +83,18 @@ enum KOSettings {
     SETTINGKO_RACESPERKO = 1 + 6,
 
 };
+
+enum WDDTCSettings {
+    SETTINGWDD_TC_EFFECT = 0,
+    SETTINGWDD_TC_TYPE = 1 + 6,
+    SETTINGWDD_TC_EXTRATYPE = 0 + 6
+};
+
+enum WDDLAPSettings {
+    SETTINGWDD_LAP_MODE = 0,
+    SETTINGWDD_LAP_COUNT = 0 + 6
+};
+
 
 //MENU SETTINGS
 enum MenuSettingFastMenus {
@@ -217,8 +229,43 @@ enum KOSettingRacesPerKO {
     KOSETTING_RACESPERKO_3,
     KOSETTING_RACESPERKO_4
 };
-//KOSETTINGS
 
+//WDDTCSettings
+enum WDDSettingTCEFFECT {
+    WDDSETTING_TCEFFECT_SINGLE,
+    WDDSETTING_TCEFFECT_DOUBLE
+};
+enum WDDSettingTCTYPE {
+    WDDSETTING_TC_DEFAULT,
+    WDDSETTING_TC_MEGA,
+    WDDSETTING_TC_STAR,
+    WDDSETTING_TC_BLOOPER
+};
+
+enum WDDSettingTCEXTRATYPE {
+    WDDSETTING_EXTRATC_DEFAULT,
+    WDDSETTING_EXTRATC_MEGA,
+    WDDSETTING_EXTRATC_STAR,
+    WDDSETTING_EXTRATC_BLOOPER
+};
+
+//WDDLAPSettings
+enum WDDSettingLAPMODE {
+    WDDSETTING_LAPMODE_NORMAL,
+    WDDSETTING_LAPMODE_FORCED
+};
+
+enum WDDSettingLAPCOUNT {
+    WDDSETTING_LAPCOUNT_1,
+    WDDSETTING_LAPCOUNT_2,
+    WDDSETTING_LAPCOUNT_3,
+    WDDSETTING_LAPCOUNT_4,
+    WDDSETTING_LAPCOUNT_5,
+    WDDSETTING_LAPCOUNT_6,
+    WDDSETTING_LAPCOUNT_7,
+    WDDSETTING_LAPCOUNT_8,
+    WDDSETTING_LAPCOUNT_9
+};  
 }//namespace Pulsar
 
 
