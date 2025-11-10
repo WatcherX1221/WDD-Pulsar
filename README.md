@@ -35,7 +35,8 @@ Sound:
 Gameplay:
 - 200cc support
 - Ultra Mini-Turbos
-- Mega TCs
+- Interchangable TCs, including Shock, Mega, Star and Blooper
+- Customisable lap count from 1 to 9
 - CLF78 and stebler's feather
 - Support for custom CC distribution
 - COOB (both kHacker35000vr's and Riidefi's versions)
